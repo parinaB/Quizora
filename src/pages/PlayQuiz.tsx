@@ -12,19 +12,19 @@ const PlayQuiz = () => {
   const { toast } = useToast();
   
   const [session, setSession] = useState<any>({
-    status: "waiting",
+    status: sessionId === 'session-1234' ? "active" : "waiting",
     show_leaderboard: false
   });
   const [currentQuestion, setCurrentQuestion] = useState<any>({
-    question_text: "Sample Question",
-    option_a: "Option A",
-    option_b: "Option B",
-    option_c: "Option C",
-    option_d: "Option D",
+    question_text: "What is the capital of France?",
+    option_a: "London",
+    option_b: "Paris",
+    option_c: "Berlin",
+    option_d: "Madrid",
     time_limit: 30
   });
   const [participant, setParticipant] = useState<any>({
-    name: "Player",
+    name: participantId || "Player",
     score: 0
   });
   const [participants, setParticipants] = useState<any[]>([

@@ -46,11 +46,15 @@ const JoinQuiz = () => {
       // });
       // const data = await response.json();
       
-      // Simulate joining
+      // Simulate joining - Auto-start quiz for code 1234
       setTimeout(() => {
-        setJoined(true);
-        setParticipantCount(Math.floor(Math.random() * 10) + 1);
         setLoading(false);
+        if (code === "1234") {
+          navigate(`/play/session-1234?participant=${name}`);
+        } else {
+          setJoined(true);
+          setParticipantCount(Math.floor(Math.random() * 10) + 1);
+        }
       }, 1000);
     } catch (error: any) {
       toast({ 
