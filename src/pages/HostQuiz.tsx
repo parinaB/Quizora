@@ -114,9 +114,9 @@ const HostQuiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5 p-4">
-      <div className="container max-w-6xl mx-auto">
-        <Card className="p-8 mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5 p-4 ">
+      <div className="container max-w-6xl mx-auto mt-20">
+        <Card className="p-4 mb-6">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-3xl font-bold">{quiz?.title}</h1>
@@ -140,7 +140,7 @@ const HostQuiz = () => {
                 onClick={startQuiz}
                 disabled={(participants?.length || 0) === 0}
                 size="lg"
-                className="bg-gradient-to-r from-primary to-secondary"
+                className=" rounded-xl bg-gradient-to-r from-primary to-secondary"
               >
                 <Play className="mr-2 h-5 w-5" />
                 Start Quiz
@@ -271,19 +271,6 @@ const HostQuiz = () => {
             </div>
           )}
         </Card>
-
-        {session?.status === 'waiting' && (participants?.length || 0) > 0 && (
-          <Card className="p-6">
-            <h3 className="text-xl font-bold mb-4">Participants ({participants?.length})</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {participants?.map(p => (
-                <div key={p._id} className="p-3 bg-muted rounded-lg text-center">
-                  {p.name}
-                </div>
-              ))}
-            </div>
-          </Card>
-        )}
       </div>
     </div>
   );

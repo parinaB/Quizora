@@ -127,7 +127,7 @@ const PlayQuiz = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-accent/10 pt-4 pb-4">
-      <div className="container max-w-md sm:max-w-2xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl">
+      <div className="container max-w-md sm:max-w-2xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mt-12">
         <Card className="p-6 mb-6">
           <div className="flex justify-between items-center">
             <div>
