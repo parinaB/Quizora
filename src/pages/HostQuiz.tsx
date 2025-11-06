@@ -13,6 +13,7 @@ const HostQuiz = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [timeLeft, setTimeLeft] = useState(0);
+  const [timerStarted, setTimerStarted] = useState(false);
 
   // 4. Get all data from one real-time query
   const sessionData = useQuery(
@@ -37,6 +38,9 @@ const HostQuiz = () => {
     if (session?.status === 'active' && !session.show_leaderboard && currentQuestion) {
       // Start a new timer when the question changes
       setTimeLeft(currentQuestion.time_limit);
+      setTimerStarted(true);
+    }else{
+      setTimerStarted(false);
     }
   }, [currentQuestion, session?.status, session?.show_leaderboard]);
 
@@ -44,11 +48,11 @@ const HostQuiz = () => {
     if (timeLeft > 0 && session?.status === 'active' && !session.show_leaderboard) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && session?.status === 'active' && currentQuestion && !session.show_leaderboard) {
+    } else if (timerStarted && timeLeft === 0 && session?.status === 'active' && currentQuestion && !session.show_leaderboard) {
       // Time's up! Automatically show leaderboard
       showLeaderboard();
     }
-  }, [timeLeft, session?.status, currentQuestion, session?.show_leaderboard]);
+  }, [timeLeft, session?.status, currentQuestion, session?.show_leaderboard,timerStarted]);
 
 
   // 6. Hook up mutations
