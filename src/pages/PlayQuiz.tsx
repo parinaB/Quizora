@@ -197,11 +197,7 @@ const PlayQuiz = () => {
                       hasAnswered && isSelected
                         ? 'border-primary bg-primary/20'
                         : ''
-                    } ${
-                      hasAnswered  && currentQuestion.correct_answer === option
-                        ? 'border-primary bg-primary/20'
-                        : ''
-                    }`}
+                    } `}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center text-base font-bold ${
