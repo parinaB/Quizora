@@ -39,21 +39,18 @@ const HostQuiz = () => {
     : [];
 
   // --- START FIX ---
-  // 1. Initialize to a default non-zero value
-  const [timeLeft, setTimeLeft] = useState(currentQuestion?.time_limit || 30);
+  // 1. Initialize to a simple default value.
+  const [timeLeft, setTimeLeft] = useState(30);
 
-  // 2. This new effect sets the time from the question data *as soon as it loads*.
+  // 2. This single effect now handles all timer logic.
   useEffect(() => {
-    if (currentQuestion && !session?.currentQuestionEndTime) {
-      setTimeLeft(currentQuestion.time_limit);
+    // Guard against running before data is loaded
+    if (!session || !currentQuestion) {
+      return;
     }
-  }, [currentQuestion, session?.currentQuestionEndTime]);
-  // --- END FIX ---
 
-  // This is your existing, correct effect that syncs with the server.
-  useEffect(() => {
-    if (session?.status === 'active' && !session.show_leaderboard && session.currentQuestionEndTime) {
-      
+    if (session.status === 'active' && !session.show_leaderboard && session.currentQuestionEndTime) {
+      // --- TIMER IS ACTIVE AND COUNTING DOWN ---
       const updateTimer = () => {
         const now = Date.now();
         const remainingMs = session.currentQuestionEndTime! - now;
@@ -70,13 +67,21 @@ const HostQuiz = () => {
       const timer = setInterval(updateTimer, 1000); // 1-second interval
       return () => clearInterval(timer);
       
+    } else if (session.status === 'waiting') {
+      // --- TIMER IS WAITING (show full time) ---
+      setTimeLeft(currentQuestion.time_limit);
     }
+    // Note: No 'else' is needed for 'finished' or 'show_leaderboard'
+    // as the timer component isn't visible then.
+    
   }, [
     session?.status, 
     session?.show_leaderboard, 
-    session?.currentQuestionEndTime, 
+    session?.currentQuestionEndTime,
+    currentQuestion, // Added dependency
     toast
   ]);
+  // --- END FIX ---
 
   const showLeaderboardMutation = useMutation(api.gameplay.showLeaderboard);
   const setRevealAnswerMutation = useMutation(api.gameplay.setRevealAnswer);
