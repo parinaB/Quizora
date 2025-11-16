@@ -20,12 +20,12 @@ const Index = () => {
         </div>
 
         {/* --- START FIX --- */}
-        {/* We adjust the grid layout to only show the "Join" button
+        {/* We adjust the flex layout to only show the "Join" button
             if the user is signed out, and show both if signed in.
-            We use `md:grid-cols-2` on the container, and `SignedIn`
+            We use `md:flex-row` on the container, and `SignedIn`
             to conditionally render the "Create Quiz" card.
         */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+        <div className="flex flex-col md:flex-row gap-8 max-w-4xl mx-auto mb-16 justify-center items-center">
           
           {/* This SignedIn wrapper is the key. */}
           {/* This card will *only* be rendered if the user is logged in. */}

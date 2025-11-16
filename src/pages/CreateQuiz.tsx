@@ -219,10 +219,6 @@ const CreateQuiz = () => {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">Questions</h2>
-              <Button onClick={addQuestion} className=" rounded-full bg-gradient-to-r from-primary to-secondary">
-                <Plus className=" h-4 w-4" />
-                Add Question
-              </Button>
             </div>
 
             {questions.map((question, index) => (
@@ -303,8 +299,8 @@ const CreateQuiz = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
+                  <div className="flex gap-4">
+                    <div className="flex-1">
                       <Label>Correct Answer *</Label>
                       <select
                         value={question.correct_answer}
@@ -319,7 +315,7 @@ const CreateQuiz = () => {
                         })}
                       </select>
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <Label>Time Limit *</Label>
                       <select
                         value={question.time_limit}
@@ -335,6 +331,12 @@ const CreateQuiz = () => {
                 </div>
               </Card>
             ))}
+          </div>
+          <div className="flex justify-end mt-5">
+            <Button onClick={addQuestion} className="rounded-full bg-gradient-to-r from-primary to-secondary p-3 mr-5">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Question
+            </Button>
           </div>
 
           <div className="w-23 mt-8 flex gap-4">
