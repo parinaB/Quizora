@@ -38,28 +38,21 @@ const HostQuiz = () => {
         .filter((o) => o.text)
     : [];
 
-  // --- START FIX ---
-  // 1. Initialize to a simple default value.
   const [timeLeft, setTimeLeft] = useState(30);
-  // Track whether we've shown the "Time's up" toast for the current question
   const [timeUpNotified, setTimeUpNotified] = useState(false);
 
-  // Reset the toast notification flag when a new question's endTime is set
   useEffect(() => {
     if (session?.currentQuestionEndTime) {
       setTimeUpNotified(false);
     }
   }, [session?.currentQuestionEndTime]);
 
-  // 2. This single effect now handles all timer logic.
  useEffect(() => {
-    // Guard against running before data is loaded
     if (!session || !currentQuestion) {
       return;
     }
 
     if (session.status === 'active' && !session.show_leaderboard && session.currentQuestionEndTime) {
-      // --- TIMER IS ACTIVE AND COUNTING DOWN ---
       const updateTimer = () => {
         const now = Date.now();
         const remainingMs = session.currentQuestionEndTime! - now;
@@ -68,22 +61,18 @@ const HostQuiz = () => {
         setTimeLeft(remainingSeconds);
 
         if (remainingSeconds === 0 && !timeUpNotified) {
-          // Show the toast only once per question
           toast({ title: "Time's up!", description: "Players can no longer answer. Click 'Show Leaderboard' or 'Next'."});
           setTimeUpNotified(true);
         }
       };
 
-      updateTimer(); // Initial call
-      const timer = setInterval(updateTimer, 1000); // 1-second interval
+      updateTimer();
+      const timer = setInterval(updateTimer, 1000);
       return () => clearInterval(timer);
       
     } else if (session.status === 'waiting') {
-      // --- TIMER IS WAITING (show full time) ---
       setTimeLeft(currentQuestion.time_limit);
     }
-    // Note: No 'else' is needed for 'finished' or 'show_leaderboard'
-    // as the timer component isn't visible then.
     
   }, [
     session?.status, 
@@ -125,21 +114,15 @@ const HostQuiz = () => {
     }
   };
 
+  // FIX: Simplified handler
   const handleShowLeaderboardClick = () => {
-    if (!questions || !session) return;
-    
-    if (session.current_question_index === questions.length - 1) {
-      nextQuestion();
-    } else {
-      showLeaderboard();
-    }
+    showLeaderboard();
   };
 
   const skipLeaderboard = () => {
     nextQuestion();
   };
 
-  // 7. Handle loading state
   if (sessionData === undefined) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -148,7 +131,6 @@ const HostQuiz = () => {
     );
   }
 
-  // 8. Handle not found or not authorized
   if (sessionData === null) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
@@ -226,7 +208,6 @@ const HostQuiz = () => {
                 )}
               </div>
 
-              {/* --- MODIFIED BUTTON GROUP --- */}
               <div className="flex gap-1 justify-end mb-2 ">
                 <Button
                   disabled={timeLeft > 0 || session?.reveal_answer}
@@ -246,22 +227,19 @@ const HostQuiz = () => {
                 </Button>
                 <Button
                   disabled={timeLeft > 0}
-                  onClick={handleShowLeaderboardClick} // <-- Use new handler
+                  onClick={handleShowLeaderboardClick} 
                   size="sm"
-                  variant="ghost" // <-- Removed dependency on local state
+                  variant="ghost" 
                   className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-lg text-gray-500"
                 >
                  Show Leaderboard
                 </Button>
                 
               </div>
-              {/* --- END MODIFIED BUTTON GROUP --- */}
-
 
               <div className="grid grid-cols-1 gap-4 text-primary-glow">
                 {options.map(({ key: option, text: optionText }) => {
                   const colors = {
-                    // default styling; admin can decide colors later
                     default: 'gray-600 border-gray-300 '
                   } as Record<string, string>;
 
@@ -278,9 +256,8 @@ const HostQuiz = () => {
                   );
                 })}
               </div>
-              {/*---Modified Button Group---*/}
               <Button
-                  onClick={nextQuestion} // <-- Added this button
+                  onClick={nextQuestion} 
                   size="sm"
                   className=" display:center px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-lg"
                 >
