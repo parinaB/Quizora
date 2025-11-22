@@ -1,5 +1,5 @@
 // convex/quizzes.ts
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 // Admin: Create a new quiz and its questions
@@ -10,11 +10,11 @@ export const createQuiz = mutation({
     questions: v.array(
       v.object({
         question_text: v.string(),
-        question_image_url: v.optional(v.string()), // <-- FIXED
+        question_image_url: v.optional(v.string()),
         option_a: v.string(),
         option_b: v.string(),
-        option_c: v.optional(v.string()), // <-- FIXED
-        option_d: v.optional(v.string()), // <-- FIXED
+        option_c: v.optional(v.string()),
+        option_d: v.optional(v.string()),
         correct_answer: v.string(),
         time_limit: v.number(),
         order_number: v.number(),
@@ -31,7 +31,7 @@ const creatorId = identity.subject; // This is the Clerk User ID
     const quizId = await ctx.db.insert("quizzes", {
       title: args.title,
       description: args.description,
-      creatorId: creatorId, // Use the determined creatorId
+      creatorId: creatorId,
     });
 
     for (let i = 0; i < args.questions.length; i++) {
@@ -85,8 +85,13 @@ export const getMyQuizzes = query({
       .order("desc")
       .collect();
 
-    // Return minimal fields needed by the client
-    return quizzes.map((q) => ({ _id: q._id, title: q.title, description: q.description }));
+    // Return fields needed by the client, including creation time
+    return quizzes.map((q) => ({ 
+      _id: q._id, 
+      title: q.title, 
+      description: q.description,
+      _creationTime: q._creationTime // Expose the system creation time
+    }));
   },
 });
 
@@ -115,5 +120,35 @@ export const deleteQuiz = mutation({
     await ctx.db.delete(args.id);
 
     return true;
+  },
+});
+
+// Internal mutation for Cron jobs to clean up old quizzes
+export const deleteOldQuizzes = internalMutation({
+  handler: async (ctx) => {
+    const cutoffDate = Date.now() - (90 * 24 * 60 * 60 * 1000); // 90 days ago
+
+    // We iterate through quizzes. 
+    // Note: For very large databases, this should be paginated, but fine for this scale.
+    const quizzes = await ctx.db.query("quizzes").collect();
+
+    let deletedCount = 0;
+    for (const quiz of quizzes) {
+      if (quiz._creationTime < cutoffDate) {
+        // Delete questions first
+        const questions = await ctx.db
+          .query("questions")
+          .withIndex("by_quizId_order", (q) => q.eq("quizId", quiz._id))
+          .collect();
+        
+        for (const q of questions) {
+          await ctx.db.delete(q._id);
+        }
+        // Delete quiz
+        await ctx.db.delete(quiz._id);
+        deletedCount++;
+      }
+    }
+    console.log(`Cron: Deleted ${deletedCount} old quizzes.`);
   },
 });
