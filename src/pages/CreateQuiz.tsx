@@ -202,11 +202,11 @@ const CreateQuiz = () => {
           question_image_url: q.question_image_url || undefined,
           correct_answer: q.correct_answer,
           time_limit: q.time_limit,
-          order_number: index, // Force sequential order
+          order_number: index,
         };
 
         q.options.forEach((opt, i) => {
-          const letter = String.fromCharCode(97 + i); // 'a', 'b', 'c', ...
+          const letter = String.fromCharCode(97 + i);
           mapped[`option_${letter}`] = opt;
         });
 
@@ -257,7 +257,7 @@ const CreateQuiz = () => {
           Back to Home
         </Button>
 
-        <Card className="p-2 sm:p-4 md:p-6 lg:p-8 shadow-lg rounded-2xl border-2 border-transparent hover:border-primary transition-all duration-300">
+        <Card className="p-5 sm:p-5 md:p-6 lg:p-8 shadow-lg rounded-2xl border-2 border-transparent hover:border-primary transition-all duration-300">
           <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-4xl font-bold mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             {quizIdParam ? "Edit Quiz" : "Create Your Quiz"}
           </h1>
