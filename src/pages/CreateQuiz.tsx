@@ -257,8 +257,8 @@ const CreateQuiz = () => {
           Back to Home
         </Button>
 
-        <Card className="p-8 shadow-lg rounded-2xl border-2 border-transparent hover:border-primary transition-all duration-300">
-          <h1 className="text-4xl font-bold mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+        <Card className="p-2 sm:p-4 md:p-6 lg:p-8 shadow-lg rounded-2xl border-2 border-transparent hover:border-primary transition-all duration-300">
+          <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-4xl font-bold mb-8 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             {quizIdParam ? "Edit Quiz" : "Create Your Quiz"}
           </h1>
 
@@ -286,7 +286,7 @@ const CreateQuiz = () => {
             </div>
           </div>
 
-          <div className="space-y-6 px-5">
+          <div className="space-y-6 px-2">
             <div className="relative">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Questions</h2>
@@ -303,12 +303,12 @@ const CreateQuiz = () => {
                 <Card className="absolute right-0 mt-2 w-80 p-4 z-20">
                   <div className="flex justify-between items-center mb-3">
                     <h3 className="text-sm font-semibold">Quiz Settings</h3>
-                    <Button variant="ghost" size="sm" onClick={() => setShowSettings(false)}>Close</Button>
+                    <Button variant="ghost" size="sm" className="dark:hover:bg-secondary rounded-full" onClick={() => setShowSettings(false)}>Close</Button>
                   </div>
 
                   <div className="mb-3">
-                    <Label>Default Time Limit</Label>
-                    <div className="flex items-center gap-2 mt-2">
+                    <Label>Default Time </Label>
+                    <div className="flex items-center gap-1 mt-2">
                       <select
                         value={timeForAll}
                         onChange={(e) => {
@@ -318,7 +318,7 @@ const CreateQuiz = () => {
                             setQuestions(prev => prev.map(q => ({ ...q, time_limit: v })));
                           }
                         }}
-                        className="flex-1 p-2 border rounded-md"
+                        className="flex-1 p-2 border rounded-md w-3"
                       >
                         {TIME_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -345,23 +345,24 @@ const CreateQuiz = () => {
                   </div>
 
                   <div className="border-t pt-3 flex justify-between">
-                     <Button size="sm" onClick={() => { applyTimeToAll(); setApplyDefaultTime(true); }} className="px-4 py-1">
+                     <Button size="sm" onClick={() => { applyTimeToAll(); setApplyDefaultTime(true); }} className="rounded-full hover:bg-secondary">
                         Save
                       </Button>
-                    <Button variant="link" size="sm" onClick={saveDraft}>Save to Drafts</Button>
+                    <Button variant="link" size="sm" onClick={saveDraft} className="no-underline hover:no-underline hover:text-secondary">Save to Drafts</Button>
                   </div>
                 </Card>
               )}
             </div>
 
              {questions.map((question, index) => (
-               <Card key={index} className="p-6 border-2">
+               <Card key={index} className="p-2 sm:p-2 md:p-4 lg:p-6 border-2">
                  <div className="flex justify-between items-start mb-4">
                    <h3 className="text-lg font-semibold">Question {index + 1}</h3>
                    {questions.length > 1 && (
                      <Button
                        variant="ghost"
                        size="sm"
+                       className="dark:hover:bg-primary-foreground"
                        onClick={() => removeQuestion(index)}
                      >
                        <Trash2 className="h-4 w-4 text-destructive" />
@@ -403,7 +404,7 @@ const CreateQuiz = () => {
                                value={opt}
                                onChange={(e) => updateOption(index, optIndex, e.target.value)}
                                placeholder={`Option ${letter}`}
-                               className="mt-2"
+                               className="mt-2 text-xs"
                              />
                            </div>
                            <div className="flex-1">
@@ -429,10 +430,10 @@ const CreateQuiz = () => {
                        variant="ghost"
                          onClick={() => addOption(index)} 
                          size="sm" 
-                         className="rounded-full"
+                         className="rounded-full dark:hover:bg-primary-foreground dark:hover:text-white"
                          disabled={question.options.length >= 4} // Disable adding more than 4 options
                        >
-                         <Plus className="h-4 w-4 mr-2" />
+                         <Plus className="h-4 w-4" />
                          Add Option
                        </Button>
                      </div>
@@ -472,8 +473,8 @@ const CreateQuiz = () => {
              ))}
            </div>
            <div className="flex justify-end mt-5">
-             <Button variant="ghost" onClick={addQuestion} className="rounded-full p-3 mr-5">
-               <Plus className="h-4 w-4 mr-2" />
+             <Button variant="ghost" onClick={addQuestion} className="rounded-full p-3 mr-5 dark:hover:bg-primary-foreground dark:hover:text-white">
+               <Plus className="h-4 w-4" />
                Add Question
              </Button>
            </div>
