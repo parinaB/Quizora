@@ -12,11 +12,10 @@ import { api } from "../../convex/_generated/api";
 import { Card } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { formatDistanceToNow } from "date-fns"; // Helper for "2 days ago"
+import { formatDistanceToNow } from "date-fns";
 
 export default function Dashboard() {
-  // FIX: Renamed 'Navigate' to 'navigate' to follow conventions
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const myQuizzes = useQuery(api.quizzes.getMyQuizzes);
@@ -31,41 +30,41 @@ export default function Dashboard() {
             <SidebarTrigger className="-ml-1" />
           </div>
         </header>
-        
+
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-         
-    
 
-            <div className="bg-muted/30 min-h-[100vh] flex-1 rounded-md md:min-h-min ">
-            <div className="flex flex-row w-full justify-end">
-              <Button variant="ghost" onClick={() => navigate('/join')} className="hover:bg-gradient-to-r from-primary to-secondary rounded-full m-1 mt-5 px-4">
-                        Join Quiz
-                      </Button>
-            <Button onClick={() => navigate('/create-quiz')} className="text-xs lg:text-sm bg-primary text-primary-foreground hover:bg-background/80 hover:text-primary rounded-full border border-secondary-foreground-30 m-2 mt-5 p-1 lg:p-5 ">
-                        <Plus className="h-4 w-4" />
-                        Create Quiz
-                      </Button>
-          </div>
-            <div className="px-1 lg:px-32 py-3 h-screen">
-            <div className="flex flex-row justify-between m-3 text-muted-foreground/70 opacity-0 lg:opacity-100">
-              <p>Details</p>
-              <p>Created</p>
-              <p>More</p>
+
+
+          <div className="bg-muted/30 min-h-[100vh] flex-1 rounded-md md:min-h-min ">
+            <div className="flex flex-row w-full justify-end px-4 md:px-8 lg:px-32">
+              <Button variant="ghost" onClick={() => navigate('/join')} className="hover:bg-primary-glow rounded-full m-1 mt-5 px-5">
+                Join Quiz
+              </Button>
+              <Button onClick={() => navigate('/create-quiz')} className="text-xs lg:text-sm bg-gradient-to-r from-primary to-secondary text-primary-foreground hover:brightness-90 hover:text-black rounded-full m-2 mt-5 px-3 py-2 lg:p-5 ">
+                <Plus className="h-4 w-4" />
+                Create Quiz
+              </Button>
             </div>
+            <div className="px-4 md:px-8 lg:px-32 py-3 h-screen">
+              <div className="hidden lg:flex flex-row justify-between m-3 text-muted-foreground/70">
+                <p>Details</p>
+                <p>Created</p>
+                <p>More</p>
+              </div>
 
-            <div className="flex flex-col gap-4 ">
-              {(myQuizzes || []).map((q: any) => (
-                <Card key={String(q._id)} className="p-4 flex flex-col justify-between">
-                  
+              <div className="flex flex-col gap-4 ">
+                {(myQuizzes || []).map((q: any) => (
+                  <Card key={String(q._id)} className="p-4 flex flex-col justify-between">
+
                     <div className="flex justify-between items-center">
                       <div>
-                      <h3 className="text-lg font-bold line-clamp-1">{q.title}</h3>
-                         {q.description && <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{q.description}</p>}
-                           </div>
+                        <h3 className="text-lg font-bold line-clamp-1">{q.title}</h3>
+                        {q.description && <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{q.description.length > 10 ? `${q.description.substring(0, 10)}...` : q.description}</p>}
+                      </div>
 
-                           <div className="flex flex-row items-center text-muted-foreground">
-                      <Clock className="h-3 w-3 mr-1" />
-                    <span>{formatDistanceToNow(new Date(q._creationTime))} ago</span>
+                      <div className="flex flex-row items-center text-muted-foreground">
+                        <Clock className="h-3 w-3 mr-1" />
+                        <span>{formatDistanceToNow(new Date(q._creationTime))} ago</span>
                       </div>
 
                       <DropdownMenu>
@@ -96,15 +95,15 @@ export default function Dashboard() {
                       </DropdownMenu>
 
                     </div>
-                                  
-                </Card>
-              ))}
-            </div>
+
+                  </Card>
+                ))}
+              </div>
 
             </div>
-            </div>
+          </div>
 
-            </div>
+        </div>
 
       </SidebarInset>
     </SidebarProvider>

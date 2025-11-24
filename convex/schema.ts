@@ -3,11 +3,11 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
- 
+
 
   // 'quizzes' table
   quizzes: defineTable({
-    creatorId: v.string(), 
+    creatorId: v.string(),
     title: v.string(),
     description: v.optional(v.string()),
   }).index("by_creator", ["creatorId"]),
@@ -21,7 +21,7 @@ export default defineSchema({
     option_b: v.string(),
     option_c: v.optional(v.string()),
     option_d: v.optional(v.string()),
-    correct_answer: v.string(), // "A", "B", "C", or "D"
+    correct_answer: v.string(),
     time_limit: v.number(),
     order_number: v.number(),
   })
@@ -30,7 +30,7 @@ export default defineSchema({
   // 'quiz_sessions' table for live rooms
   quiz_sessions: defineTable({
     quizId: v.id("quizzes"),
-    hostId: v.string(), // A simple string to identify the host
+    hostId: v.string(),
     join_code: v.string(),
     status: v.union(
       v.literal("waiting"),
@@ -45,15 +45,15 @@ export default defineSchema({
     currentQuestionStartTime: v.optional(v.number()),
     currentQuestionEndTime: v.optional(v.number()),
 
-  }).index("by_join_code", ["join_code"]), // For players joining
+  }).index("by_join_code", ["join_code"]),
 
   // 'participants' table for players
   participants: defineTable({
-    sessionId: v.id("quiz_sessions"), // Links to the live session
+    sessionId: v.id("quiz_sessions"),
     name: v.string(),
     score: v.number(),
   })
-    .index("by_sessionId_score", ["sessionId", "score"]), 
+    .index("by_sessionId_score", ["sessionId", "score"]),
 
   // 'answers' table
   answers: defineTable({

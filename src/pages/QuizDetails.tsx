@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Play, Copy, CheckCircle, Loader2 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { Id } from "../../convex/_generated/dataModel"; // <-- This import is needed
+import { Id } from "../../convex/_generated/dataModel";
 
 const QuizDetails = () => {
   const { id } = useParams();
@@ -17,7 +17,7 @@ const QuizDetails = () => {
 
   // Fetch quiz data, casting the 'id' string to Id<"quizzes">
   const quizData = useQuery(
-    api.quizzes.getQuizDetails, 
+    api.quizzes.getQuizDetails,
     id ? { id: id as Id<"quizzes"> } : "skip"
   );
   const quiz = quizData?.quiz;
@@ -32,9 +32,9 @@ const QuizDetails = () => {
     try {
       // Call the mutation, casting the 'id' string
       const sessionId = await createSessionMutation({
-        quizId: id as Id<"quizzes">, 
+        quizId: id as Id<"quizzes">,
       });
-      
+
       // Navigate to the host page
       navigate(`/host/${sessionId}`);
     } catch (error: any) {
@@ -45,7 +45,7 @@ const QuizDetails = () => {
   };
 
   const copyQuizLink = () => {
-    const link = window.location.href; // Use current URL
+    const link = window.location.href;
     navigator.clipboard.writeText(link);
     setCopied(true);
     toast({ title: "Link Copied!", description: "Share this link with others" });
@@ -78,8 +78,7 @@ const QuizDetails = () => {
     );
   }
 
-  // Auth logic removed
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 py-8">
       <div className="container max-w-4xl mx-auto px-4">
@@ -94,12 +93,12 @@ const QuizDetails = () => {
 
         <Card className="flex flex-col lg:flex-row justify-between items-betwwun px-4 py-3 mb-6">
           <div>
-          <h1 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            {quiz?.title}
-          </h1>
-          {quiz?.description && (
-            <p className="text-muted-foreground mb-2">{quiz.description}</p>
-          )} </div>
+            <h1 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              {quiz?.title}
+            </h1>
+            {quiz?.description && (
+              <p className="text-muted-foreground mb-2">{quiz.description}</p>
+            )} </div>
 
           <div className="flex gap-4">
             <Button
@@ -146,9 +145,9 @@ const QuizDetails = () => {
               </div>
               <p className="mb-3">{question.question_text}</p>
               {question.question_image_url && (
-                <img 
-                  src={question.question_image_url} 
-                  alt="Question" 
+                <img
+                  src={question.question_image_url}
+                  alt="Question"
                   className="w-full max-h-64 object-cover rounded-lg mb-3"
                 />
               )}
@@ -157,13 +156,12 @@ const QuizDetails = () => {
                   const optionText = question[`option_${option.toLowerCase()}`];
                   if (!optionText) return null;
                   return (
-                    <div 
+                    <div
                       key={option}
-                      className={`p-3 rounded-lg border ${
-                        question.correct_answer === option 
-                          ? 'bg-success/10 border-success' 
+                      className={`p-3 rounded-lg border ${question.correct_answer === option
+                          ? 'bg-success/10 border-success'
                           : 'bg-muted'
-                      }`}
+                        }`}
                     >
                       <span className="font-bold mr-2">{option}.</span>
                       {optionText}

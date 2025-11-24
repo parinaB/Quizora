@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { useAuth, useUser } from "@clerk/clerk-react"; // <-- 2. Import Clerk hooks
+import { useAuth, useUser } from "@clerk/clerk-react";
 
 const JoinQuiz = () => {
   const navigate = useNavigate();
@@ -17,12 +17,12 @@ const JoinQuiz = () => {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
 
-  const { isSignedIn } = useAuth(); // <-- 3. Get auth status
-  const { user } = useUser(); // <-- 4. Get user object
+  const { isSignedIn } = useAuth();
+  const { user } = useUser();
 
-  
+
   useEffect(() => {
-   
+
     if (isSignedIn && user?.fullName) {
       setName(user.fullName);
     }
@@ -33,10 +33,10 @@ const JoinQuiz = () => {
 
   const joinQuiz = async () => {
     if (!code.trim() || !name.trim()) {
-      toast({ 
-        title: "Missing Information", 
+      toast({
+        title: "Missing Information",
         description: "Please enter both quiz code and your name",
-        variant: "destructive" 
+        variant: "destructive"
       });
       return;
     }
@@ -48,11 +48,11 @@ const JoinQuiz = () => {
         join_code: code.toUpperCase(),
         name: name,
       });
-      
+
       // 5. Navigate to the play screen on success
       navigate(`/play/${sessionId}?participant=${participantId}`);
 
-  } catch (error: any) {
+    } catch (error: any) {
       const serverMessage = error?.message ? String(error.message) : "";
       let description = "An unknown error occured.";
 
@@ -60,10 +60,10 @@ const JoinQuiz = () => {
         description = "Quiz has already started.";
       }
 
-      toast({ 
-        title: "Failed to Join", 
+      toast({
+        title: "Failed to Join",
         description,
-        variant: "destructive" 
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
@@ -75,7 +75,7 @@ const JoinQuiz = () => {
       <Card className="w-full max-w-md p-8 bg-card border-border border-x-primary-foreground-30 rounded-3xl shadow-2xl">
         <Button
           variant="ghost"
-          onClick={() => navigate('/')}
+          onClick={() => navigate(isSignedIn ? '/dashboard' : '/')}
           className="mb-6 text-primary hover:text-primary hover:bg-primary/10 hover: rounded-full"
         >
           <ArrowLeft className=" h-4 w-4" />
@@ -106,14 +106,13 @@ const JoinQuiz = () => {
             <Label htmlFor="name" className="text-foreground">Your Name</Label>
             <Input
               id="name"
-              value={name} // This is now pre-filled by the useEffect
+              value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your name"
-              readOnly={isSignedIn} // Make it read-only if signed in
+              readOnly={isSignedIn}
               className="mt-2 bg-input border-border rounded-xl font-bold text-foreground read-only:bg-muted read-only:text-muted-foreground read-only:cursor-default"
             />
           </div>
-          {/* --- END: This block is now updated --- */}
 
           <div className="flex justify-center">
             <Button
@@ -123,7 +122,7 @@ const JoinQuiz = () => {
               className="w-48 bg-primary text-primary-foreground hover:bg-primary/80 rounded-full border border-primary-foreground-30"
             >
               {loading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 "Join Quiz"
               )}

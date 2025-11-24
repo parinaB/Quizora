@@ -28,11 +28,6 @@ import {
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Quizzes",
@@ -54,9 +49,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     myQuizzes && myQuizzes.length > 0
       ? myQuizzes.map((q: any) => ({ title: q.title || "Untitled", url: `/quiz/${String(q._id)}` }))
       : [
-          { title: "History", url: "#" },
-          { title: "Starred", url: "#" },
-        ];
+        { title: "History", url: "#" },
+        { title: "Starred", url: "#" },
+      ];
 
   const navMain = [
     {

@@ -22,11 +22,11 @@ export const createQuiz = mutation({
     ),
   },
   handler: async (ctx, args) => {
-   const identity = await ctx.auth.getUserIdentity();
+    const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("You must be logged in to create a quiz.");
     }
-    const creatorId = identity.subject; // This is the Clerk User ID
+    const creatorId = identity.subject;
 
     const quizId = await ctx.db.insert("quizzes", {
       title: args.title,
@@ -133,7 +133,7 @@ export const getQuizDetails = query({
     const questions = await ctx.db
       .query("questions")
       .withIndex("by_quizId_order", (q) => q.eq("quizId", args.id))
-      .order("asc") 
+      .order("asc")
       .collect();
 
     return { quiz, questions, creatorId: quiz.creatorId };
@@ -154,11 +154,11 @@ export const getMyQuizzes = query({
       .collect();
 
     // Return fields needed by the client, including creation time
-    return quizzes.map((q) => ({ 
-      _id: q._id, 
-      title: q.title, 
+    return quizzes.map((q) => ({
+      _id: q._id,
+      title: q.title,
       description: q.description,
-      _creationTime: q._creationTime // Expose the system creation time
+      _creationTime: q._creationTime
     }));
   },
 });
@@ -196,8 +196,6 @@ export const deleteOldQuizzes = internalMutation({
   handler: async (ctx) => {
     const cutoffDate = Date.now() - (90 * 24 * 60 * 60 * 1000); // 90 days ago
 
-    // We iterate through quizzes. 
-    // Note: For very large databases, this should be paginated, but fine for this scale.
     const quizzes = await ctx.db.query("quizzes").collect();
 
     let deletedCount = 0;
@@ -208,7 +206,7 @@ export const deleteOldQuizzes = internalMutation({
           .query("questions")
           .withIndex("by_quizId_order", (q) => q.eq("quizId", quiz._id))
           .collect();
-        
+
         for (const q of questions) {
           await ctx.db.delete(q._id);
         }

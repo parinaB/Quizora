@@ -1,6 +1,6 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { Doc } from "./_generated/dataModel"; // <-- Import Doc
+import { Doc } from "./_generated/dataModel";
 
 // Helper function to generate a 6-character join code
 const generateJoinCode = () => {
@@ -18,16 +18,16 @@ export const createSession = mutation({
   handler: async (ctx, args) => {
     // Get the currently authenticated user's ID (or anonymous ID)
     const identity = await ctx.auth.getUserIdentity();
-if (!identity) {
-  throw new Error("You must be logged in to host a quiz.");
-}
-const hostId = identity.subject;
+    if (!identity) {
+      throw new Error("You must be logged in to host a quiz.");
+    }
+    const hostId = identity.subject;
     // Fetch the quiz
     const quiz = await ctx.db.get(args.quizId);
     if (!quiz) {
       throw new Error("Quiz not found.");
     }
-    
+
     // Allow hosting if the quiz is anonymous OR if the host is the creator
     if (quiz.creatorId !== "anonymous" && quiz.creatorId !== hostId) {
       throw new Error("You are not authorized to host this quiz.");
@@ -52,7 +52,7 @@ const hostId = identity.subject;
     // Create the quiz session
     const sessionId = await ctx.db.insert("quiz_sessions", {
       quizId: args.quizId,
-      hostId: hostId, // Use the determined hostId
+      hostId: hostId,
       join_code,
       status: "waiting",
       current_question_index: 0,
@@ -63,9 +63,7 @@ const hostId = identity.subject;
   },
 });
 
-// Lookup a session by join code. This is a minimal, read-only query
-// used by clients to determine whether a session is still accepting
-// players (status === 'waiting') or has already started (start time set).
+
 export const getSessionByJoinCode = query({
   args: { join_code: v.string() },
   handler: async (ctx, args) => {
@@ -76,8 +74,7 @@ export const getSessionByJoinCode = query({
 
     if (!session) return null;
 
-    // Return only the minimal fields the client needs to decide
-    // whether joining is allowed.
+
     return {
       _id: session._id,
       status: session.status,
@@ -98,9 +95,9 @@ export const joinSession = mutation({
       .first();
 
     if (!session) throw new Error("Quiz code not found.");
-    
+
     if (session.status !== "waiting")
-      throw new Error("This quiz has already started."); 
+      throw new Error("This quiz has already started.");
 
     const participantId = await ctx.db.insert("participants", {
       sessionId: session._id,
@@ -119,12 +116,12 @@ export const getHostSessionData = query({
     const session = await ctx.db.get(args.sessionId);
     if (!session) return null;
 
-   const identity = await ctx.auth.getUserIdentity();
+    const identity = await ctx.auth.getUserIdentity();
 
-// Security: Only the host can view.
-if (session.hostId !== identity?.subject) {
-   return null; 
-}
+    // Security: Only the host can view.
+    if (session.hostId !== identity?.subject) {
+      return null;
+    }
     const quiz = await ctx.db.get(session.quizId);
     if (!quiz) return null;
 
@@ -192,52 +189,50 @@ export const getPlayerSessionData = query({
       .order("desc")
       .collect();
 
-      let answerStats: Record<string, number> = {};
-      let hasAnswered = false;
-      // --- FIX: Define answerDoc here ---
-      let answerDoc: Doc<"answers"> | null = null; 
+    let answerStats: Record<string, number> = {};
+    let hasAnswered = false;
+    let answerDoc: Doc<"answers"> | null = null;
 
-      // Map of participantId -> score awarded for the current question (if any)
-      const currentQuestionScores: Record<string, number> = {};
+    // Map of participantId -> score awarded for the current question (if any)
+    const currentQuestionScores: Record<string, number> = {};
 
-      if (currentQuestion) {
-        // --- FIX: Assign to the outer answerDoc ---
-        answerDoc = await ctx.db
-          .query("answers")
-          .withIndex("by_participant_question", (q) =>
-            q.eq("participantId", args.participantId).eq("questionId", currentQuestion._id)
-          )
-          .first();
+    if (currentQuestion) {
+      answerDoc = await ctx.db
+        .query("answers")
+        .withIndex("by_participant_question", (q) =>
+          q.eq("participantId", args.participantId).eq("questionId", currentQuestion._id)
+        )
+        .first();
 
-        hasAnswered = !!answerDoc;
+      hasAnswered = !!answerDoc;
 
-        // Always fetch answers for the current question so we can mask scores for players
-        const answers = await ctx.db
-          .query("answers")
-          .withIndex("by_session_question", (q) =>
-            q.eq("sessionId", args.sessionId).eq("questionId", currentQuestion._id)
-          )
-          .collect();
+      // Always fetch answers for the current question so we can mask scores for players
+      const answers = await ctx.db
+        .query("answers")
+        .withIndex("by_session_question", (q) =>
+          q.eq("sessionId", args.sessionId).eq("questionId", currentQuestion._id)
+        )
+        .collect();
 
-        // Build per-option stats (used when leaderboard is shown)
-        if (session.show_leaderboard) {
-          answerStats = answers.reduce((acc, ans) => {
-            acc[ans.answer] = (acc[ans.answer] || 0) + 1;
-            return acc;
-          }, {} as Record<string, number>);
+      // Build per-option stats (used when leaderboard is shown)
+      if (session.show_leaderboard) {
+        answerStats = answers.reduce((acc, ans) => {
+          acc[ans.answer] = (acc[ans.answer] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
 
-          for (const opt of ["A", "B", "C", "D"]) {
-            if (answerStats[opt] === undefined) answerStats[opt] = 0;
-          }
-        }
-
-        // Record per-participant score for the current question so we can subtract it from
-        // their displayed score until the host reveals the answer.
-        for (const a of answers) {
-          const pid = a.participantId as string;
-          currentQuestionScores[pid] = (currentQuestionScores[pid] || 0) + (a.score || 0);
+        for (const opt of ["A", "B", "C", "D"]) {
+          if (answerStats[opt] === undefined) answerStats[opt] = 0;
         }
       }
+
+      // Record per-participant score for the current question so we can subtract it from
+      // their displayed score until the host reveals the answer.
+      for (const a of answers) {
+        const pid = a.participantId as string;
+        currentQuestionScores[pid] = (currentQuestionScores[pid] || 0) + (a.score || 0);
+      }
+    }
 
     // For players, hide the score gained from the current question until reveal
     const visibleParticipants = allParticipants.map((p) => {
@@ -252,14 +247,24 @@ export const getPlayerSessionData = query({
       return { ...participant, score: visibleScore };
     })();
 
+    const quiz = await ctx.db.get(session.quizId);
+
+    // Hide correct answer from client
+    const secureCurrentQuestion = currentQuestion ? {
+      ...currentQuestion,
+      correct_answer: session.reveal_answer ? currentQuestion.correct_answer : undefined,
+    } : null;
+
     return {
       session,
+      quiz,
       participant: visibleParticipant,
       allParticipants: visibleParticipants,
-      currentQuestion,
+      currentQuestion: secureCurrentQuestion,
       answerStats,
       hasAnswered,
-      submittedAnswer: answerDoc?.answer || null, // <-- This line will now work
+      submittedAnswer: answerDoc?.answer || null,
+      lastTimeTaken: answerDoc?.time_taken || null,
     };
   },
 });

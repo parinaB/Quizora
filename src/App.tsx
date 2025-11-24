@@ -28,7 +28,7 @@ const App = () => (
         <Sonner />
         <ThemeToggle />
         <AuthButtons />
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_relativeSplatPath: true }}>
           <SignInRedirect />
           <Routes>
             <Route path="/" element={<Index />} />

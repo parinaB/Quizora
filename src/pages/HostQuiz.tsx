@@ -7,19 +7,19 @@ import { useToast } from "@/hooks/use-toast";
 import { Users, Play, SkipForward, Trophy, Clock, Loader2, ArrowLeft } from "lucide-react";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api"; 
-import { Id } from "../../convex/_generated/dataModel"; 
+import { api } from "../../convex/_generated/api";
+import { Id } from "../../convex/_generated/dataModel";
 
 const HostQuiz = () => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
   const sessionData = useQuery(
     api.sessions.getHostSessionData,
     sessionId ? { sessionId: sessionId as Id<"quiz_sessions"> } : "skip"
   );
-  
+
   const startQuizMutation = useMutation(api.gameplay.startQuiz);
 
   const session = sessionData?.session;
@@ -27,16 +27,16 @@ const HostQuiz = () => {
   const questions = sessionData?.questions;
   const participants = sessionData?.participants;
   const currentQuestion = sessionData?.currentQuestion;
-  
+
   const options = currentQuestion
     ? Object.keys(currentQuestion)
-        .filter((k) => k.startsWith("option_"))
-        .sort()
-        .map((k) => {
-          const letter = k.replace("option_", "").toUpperCase();
-          return { key: letter, text: (currentQuestion as any)[k] };
-        })
-        .filter((o) => o.text)
+      .filter((k) => k.startsWith("option_"))
+      .sort()
+      .map((k) => {
+        const letter = k.replace("option_", "").toUpperCase();
+        return { key: letter, text: (currentQuestion as any)[k] };
+      })
+      .filter((o) => o.text)
     : [];
 
   const [timeLeft, setTimeLeft] = useState(30);
@@ -48,7 +48,7 @@ const HostQuiz = () => {
     }
   }, [session?.currentQuestionEndTime]);
 
- useEffect(() => {
+  useEffect(() => {
     if (!session || !currentQuestion) {
       return;
     }
@@ -58,11 +58,11 @@ const HostQuiz = () => {
         const now = Date.now();
         const remainingMs = session.currentQuestionEndTime! - now;
         const remainingSeconds = Math.max(0, Math.floor(remainingMs / 1000));
-        
+
         setTimeLeft(remainingSeconds);
 
         if (remainingSeconds === 0 && !timeUpNotified) {
-          toast({ title: "Time's up!", description: "Players can no longer answer. Click 'Show Leaderboard' or 'Next'."});
+          toast({ title: "Time's up!", description: "Players can no longer answer. Click 'Show Leaderboard' or 'Next'." });
           setTimeUpNotified(true);
         }
       };
@@ -70,14 +70,14 @@ const HostQuiz = () => {
       updateTimer();
       const timer = setInterval(updateTimer, 1000);
       return () => clearInterval(timer);
-      
+
     } else if (session.status === 'waiting') {
       setTimeLeft(currentQuestion.time_limit);
     }
-    
+
   }, [
-    session?.status, 
-    session?.show_leaderboard, 
+    session?.status,
+    session?.show_leaderboard,
     session?.currentQuestionEndTime,
     currentQuestion?.time_limit,
     timeUpNotified,
@@ -115,7 +115,6 @@ const HostQuiz = () => {
     }
   };
 
-  // FIX: Simplified handler
   const handleShowLeaderboardClick = () => {
     showLeaderboard();
   };
@@ -150,11 +149,11 @@ const HostQuiz = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 p-2 ">
       <div className="container max-w-6xl mx-auto mt-20">
-        <Card className="p-2 mb-6">
+        <Card className="p-4 mb-6">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold mb-2 dark:text-white/80">{quiz?.title}</h1>
@@ -187,7 +186,8 @@ const HostQuiz = () => {
           )}
 
           {session?.status === 'active' && !session?.show_leaderboard && currentQuestion && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-in fade-in slide-in-from-right-5 duration-500">
+
               <div className="flex justify-between items-center mt-2">
                 <h2 className="text-xl font-bold">
                   Question {session.current_question_index + 1} of {questions?.length}
@@ -201,9 +201,9 @@ const HostQuiz = () => {
               <div className="p-4 bg-muted rounded-lg">
                 <p className="sm:text-2xl md:text-2xl lg:text-2xl xl:text-2xl font-semibold mb-4">{currentQuestion.question_text}</p>
                 {currentQuestion.question_image_url && (
-                  <img 
-                    src={currentQuestion.question_image_url} 
-                    alt="Question" 
+                  <img
+                    src={currentQuestion.question_image_url}
+                    alt="Question"
                     className="w-full max-h-96 object-contain rounded-lg"
                   />
                 )}
@@ -228,14 +228,14 @@ const HostQuiz = () => {
                 </Button>
                 <Button
                   disabled={timeLeft > 0}
-                  onClick={handleShowLeaderboardClick} 
+                  onClick={handleShowLeaderboardClick}
                   size="sm"
-                  variant="ghost" 
+                  variant="ghost"
                   className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-full text-gray-500"
                 >
-                 Show Leaderboard
+                  Show Leaderboard
                 </Button>
-                
+
               </div>
 
               <div className="grid grid-cols-1 gap-4 text-primary-glow">
@@ -258,31 +258,31 @@ const HostQuiz = () => {
                 })}
               </div>
               <Button
-                  onClick={nextQuestion} 
-                  size="sm"
-                  className=" display:center px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-full"
-                >
-                  Next
-                  <SkipForward className="h-4 w-4" />
-                </Button>
+                onClick={nextQuestion}
+                size="sm"
+                className=" display:center px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-full"
+              >
+                Next
+                <SkipForward className="h-4 w-4" />
+              </Button>
             </div>
           )}
 
           {session?.status === 'active' && session?.show_leaderboard && (
-            <div className="text-center py-4">
+            <div className="text-center py-4 animate-in fade-in slide-in-from-left-5 duration-500">
+
               <Trophy className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 mx-auto mb-4 text-warning" />
               <h2 className="text-3xl font-bold mb-6">Leaderboard</h2>
-          
+
               <div className="space-y-3 mb-8">
                 {participants?.map((p, i) => (
-                  <div 
+                  <div
                     key={p._id}
-                    className={`flex justify-between items-center p-2 sm:p-3 md:p-4 rounded-lg ${
-                      i === 0 ? 'bg-warning/20 border-2 border-warning' :
+                    className={`flex justify-between items-center p-2 sm:p-3 md:p-4 rounded-lg ${i === 0 ? 'bg-warning/20 border-2 border-warning' :
                       i === 1 ? 'bg-muted border-2' :
-                      i === 2 ? 'bg-muted border' :
-                      'bg-muted/50'
-                    }`}
+                        i === 2 ? 'bg-muted border' :
+                          'bg-muted/50'
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-2xl font-bold">{i + 1}</span>
@@ -315,18 +315,18 @@ const HostQuiz = () => {
           )}
 
           {session?.status === 'finished' && (
-            <div className="text-center py-2">
-               <DotLottieReact src="../../public/Trophy.lottie" autoplay
-              className="h-32 w-32 sm:h-32 sm:w-32 md:h-32 md:w-32 lg:h-40 lg:w-40 mx-auto" />
+            <div className="text-center py-2 animate-in fade-in zoom-in-95 duration-700">
+
+              <DotLottieReact src="../../public/Trophy.lottie" autoplay
+                className="h-32 w-32 sm:h-32 sm:w-32 md:h-32 md:w-32 lg:h-40 lg:w-40 mx-auto" />
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold mb-8">Final Leaderboard!</h2>
-              
+
               <div className="space-y-3 mb-8">
                 {participants?.map((p, i) => (
-                  <div 
+                  <div
                     key={p._id}
-                    className={`flex justify-between items-center p-2 rounded-lg ${
-                      i === 0 ? 'bg-warning/20 border-2 border-warning' : 'bg-muted'
-                    }`}
+                    className={`flex justify-between items-center p-2 rounded-lg ${i === 0 ? 'bg-warning/20 border-2 border-warning' : 'bg-muted'
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-2xl font-bold">{i + 1}</span>
@@ -338,13 +338,13 @@ const HostQuiz = () => {
               </div>
 
               <Button
-          variant="ghost"
-          onClick={() => navigate('/dashboard')}
-          className="my-3 rounded-full"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Button>
+                variant="ghost"
+                onClick={() => navigate('/dashboard')}
+                className="my-3 rounded-full"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Home
+              </Button>
             </div>
           )}
         </Card>

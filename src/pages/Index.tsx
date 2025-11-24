@@ -2,13 +2,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, Users, Zap } from "lucide-react";
-import { SignedIn } from "@clerk/clerk-react"; 
+import { SignedIn } from "@clerk/clerk-react";
 
 const Index = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80">
+      <div className="fixed top-4 left-4 md:top-8 md:left-8 z-50">
+        <img src="/logo.png" alt="Quizora Logo" className="h-12 w-12 md:h-16 md:w-16" />
+      </div>
+
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-16 mt-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <h1 className="text-6xl md:text-7xl font-black mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-serif">
@@ -18,10 +22,10 @@ const Index = () => {
             Create engaging quizzes and compete in real-time!
           </p>
         </div>
-        
+
         <div className="flex flex-col md:flex-row gap-8 max-w-4xl mx-auto mb-16 justify-center items-center">
-          
-          <Card 
+
+          <Card
             className="rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer border-2 hover:border-secondary"
             onClick={() => navigate('/join')}
           >
@@ -33,8 +37,8 @@ const Index = () => {
               <p className="text-muted-foreground">
                 Enter a quiz code and compete with others in real-time
               </p>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="rounded-full w-23 bg-gradient-to-r from-secondary to-primary-glow hover:opacity-90"
               >
                 Join Now

@@ -2,11 +2,8 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
 
-// Grace period in milliseconds to account for network latency
-const GRACE_PERIOD_MS = 5000; 
+const GRACE_PERIOD_MS = 5000;
 
-// Helper function to check if the user is the host
-// OPTIMIZATION: Fetches session and identity in parallel to reduce latency
 const checkHost = async (ctx: any, sessionId: any) => {
   const [session, identity] = await Promise.all([
     ctx.db.get(sessionId),
@@ -23,17 +20,14 @@ const checkHost = async (ctx: any, sessionId: any) => {
   return session;
 };
 
-// --- Host Actions (Secured) ---
 
-// Admin: Starts the quiz
 export const startQuiz = mutation({
-  args: { 
+  args: {
     sessionId: v.id("quiz_sessions"),
   },
   handler: async (ctx, args) => {
-    const session = await checkHost(ctx, args.sessionId); 
-    
-    // Get the first question to set the timer
+    const session = await checkHost(ctx, args.sessionId);
+
     const firstQuestion = await ctx.db
       .query("questions")
       .withIndex("by_quizId_order", (q) => q.eq("quizId", session.quizId))
@@ -47,8 +41,8 @@ export const startQuiz = mutation({
     const timeLimitMs = firstQuestion.time_limit * 1000;
     const startTime = Date.now();
     const endTime = startTime + timeLimitMs;
-    
-    await ctx.db.patch(args.sessionId, { 
+
+    await ctx.db.patch(args.sessionId, {
       status: "active",
       currentQuestionStartTime: startTime,
       currentQuestionEndTime: endTime,
@@ -56,9 +50,8 @@ export const startQuiz = mutation({
   },
 });
 
-// Admin: Shows the leaderboard for the current question
 export const showLeaderboard = mutation({
-  args: { 
+  args: {
     sessionId: v.id("quiz_sessions"),
   },
   handler: async (ctx, args) => {
@@ -67,31 +60,28 @@ export const showLeaderboard = mutation({
   },
 });
 
-// Admin: Moves to the next question or finishes the quiz
 export const nextQuestion = mutation({
-  args: { 
+  args: {
     sessionId: v.id("quiz_sessions"),
   },
   handler: async (ctx, args) => {
     const session = await checkHost(ctx, args.sessionId);
-    
+
     const questions = await ctx.db
       .query("questions")
       .withIndex("by_quizId_order", (q) => q.eq("quizId", session.quizId))
       .order("asc")
       .collect();
-    
+
     const nextIndex = session.current_question_index + 1;
 
     if (nextIndex >= questions.length) {
-      // End of quiz
-      await ctx.db.patch(args.sessionId, { 
+      await ctx.db.patch(args.sessionId, {
         status: "finished",
         currentQuestionStartTime: undefined,
         currentQuestionEndTime: undefined,
       });
     } else {
-      // Move to next question and set its timers
       const nextQuestion = questions[nextIndex];
       const timeLimitMs = nextQuestion.time_limit * 1000;
       const startTime = Date.now();
@@ -100,10 +90,9 @@ export const nextQuestion = mutation({
       await ctx.db.patch(args.sessionId, {
         current_question_index: nextIndex,
         show_leaderboard: false,
-        // Reset any revealed-answer flag when moving to the next question
         reveal_answer: false,
-        currentQuestionStartTime: startTime, // Set new start time
-        currentQuestionEndTime: endTime,     // Set new end time
+        currentQuestionStartTime: startTime,
+        currentQuestionEndTime: endTime,
       });
     }
   },
@@ -122,7 +111,7 @@ export const setRevealAnswer = mutation({
 });
 
 
-// --- Player Action (Public) ---
+
 
 // Player: Submits an answer for a question
 export const submitAnswer = mutation({
@@ -130,21 +119,18 @@ export const submitAnswer = mutation({
     participantId: v.id("participants"),
     questionId: v.id("questions"),
     sessionId: v.id("quiz_sessions"),
-    answer: v.string(), // "A", "B", "C", or "D"
-    time_taken: v.number(), // Time elapsed in seconds
+    answer: v.string(),
+    time_taken: v.number(),
   },
   handler: async (ctx, args) => {
     const { participantId, questionId, sessionId, answer, time_taken } = args;
 
-    // --- ADDED SERVER-SIDE TIME VALIDATION ---
     const session = await ctx.db.get(sessionId);
     if (!session) throw new Error("Session not found.");
-    
-    // Use grace period for latency
-    const isLate = session.currentQuestionEndTime 
-                   ? Date.now() > (session.currentQuestionEndTime + GRACE_PERIOD_MS)
-                   : false;
-    // --- END VALIDATION BLOCK ---
+
+    const isLate = session.currentQuestionEndTime
+      ? Date.now() > (session.currentQuestionEndTime + GRACE_PERIOD_MS)
+      : false;
 
     // 1. Check if already answered
     const existingAnswer = await ctx.db
@@ -155,7 +141,7 @@ export const submitAnswer = mutation({
       .first();
 
     if (existingAnswer) {
-      return; // Already answered
+      return;
     }
 
     // 2. Get question details to check answer and score
