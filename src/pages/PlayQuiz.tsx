@@ -159,7 +159,7 @@ const PlayQuiz = () => {
   const lastTimeText = (sessionData as any)?.lastTimeTaken ? `${(sessionData as any).lastTimeTaken.toFixed(1)}s` : "-";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white/40 via-white/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 pt-4 pb-4">
+    <div className="min-h-screen bg-gradient-to-t from-zinc-200/80 via-zinc-200/80 to-zinc-200/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 pt-4 pb-4 font-sans">
       <div className="container max-w-md sm:max-w-2xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mt-12">
         <Card className="p-1 mb-6">
           <div className="flex justify-between items-center">
@@ -183,7 +183,7 @@ const PlayQuiz = () => {
         )}
 
         {session.status === 'active' && !session.show_leaderboard && currentQuestion && (
-          <Card className="p-6 bg-card border-border rounded-3xl animate-in fade-in slide-in-from-right-5 duration-500">
+          <Card className="p-4 bg-card border-border rounded-3xl animate-in fade-in slide-in-from-right-5 duration-500">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-base font-semibold text-muted-foreground">Question</h3>
               <div className="flex items-center gap-2 text-secondary">
@@ -193,7 +193,7 @@ const PlayQuiz = () => {
             </div>
 
             <div className="mb-6">
-              <p className="text-xl font-bold mb-4">{currentQuestion.question_text}</p>
+              <p className="text-xl font-bold mb-4 bg-muted p-2 rounded-lg">{currentQuestion.question_text}</p>
               {currentQuestion.question_image_url && (
                 <img
                   src={currentQuestion.question_image_url}
@@ -203,7 +203,7 @@ const PlayQuiz = () => {
               )}
             </div>
 
-            <div className="space-y-2 mb-5">
+            <div className="space-y-2 mb-5 text-base sm:text-lg md:text-xl">
               {['A', 'B', 'C', 'D'].map(option => {
                 const optionText = currentQuestion[`option_${option.toLowerCase()}`];
                 if (!optionText) return null;
@@ -219,7 +219,7 @@ const PlayQuiz = () => {
                   <div
                     key={option}
                     onClick={() => handleOptionSelect(option)}
-                    className={`relative p-4 rounded-xl border-2 transition-all dark:text-zinc-300 ${(hasAnswered || timeLeft === 0)
+                    className={`relative p-2  rounded-xl border-2 transition-all dark:text-zinc-300 ${(hasAnswered || timeLeft === 0)
                       ? 'cursor-default'
                       : 'cursor-pointer hover:border-primary/50'
                       } ${isSelected && !(hasAnswered || timeLeft === 0)
@@ -278,7 +278,7 @@ const PlayQuiz = () => {
         )}
 
         {session.status === 'active' && session.show_leaderboard && (
-          <Card className="p-8 text-center animate-in fade-in slide-in-from-left-5 duration-500">
+          <Card className="p-4 text-center animate-in fade-in slide-in-from-left-5 duration-500">
             <Trophy className="h-16 w-16 mx-auto mb-4 text-warning" />
             <h2 className="text-3xl font-bold mb-8 dark:text-zinc-200">Current Standings</h2>
             <div className="mb-8">
@@ -290,13 +290,13 @@ const PlayQuiz = () => {
               {allParticipants?.map((p, i) => (
                 <div
                   key={p._id}
-                  className={`flex justify-between items-center p-4 rounded-lg ${p._id === participantId ? 'bg-primary/20 border-2 border-primary' :
+                  className={`flex justify-between items-center p-2 rounded-lg ${p._id === participantId ? 'bg-primary/20 border-2 border-primary' :
                     i === 0 ? 'bg-warning/20 border-2 border-warning' :
                       'bg-muted'
                     }`}
                 >
-                  <div className="flex items-center gap-3 dark:text-zinc-200">
-                    <span className="text-xl font-bold">{i + 1}</span>
+                  <div className="flex items-center gap-3 dark:text-zinc-200 text-base sm:text-lg md:text-xl">
+                    <span className=" font-bold">{i + 1}</span>
                     <span className="font-semibold">{p.name}</span>
                   </div>
                   <span className="text-xl font-bold text-orange-300">{p.score}</span>
@@ -326,8 +326,8 @@ const PlayQuiz = () => {
                       'bg-muted'
                     }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl font-bold">{i + 1}</span>
+                  <div className="flex items-center gap-3 text-base sm:text-lg md:text-xl">
+                    <span className="font-bold">{i + 1}</span>
                     <span className="font-semibold">{p.name}</span>
                   </div>
                   <span className="text-xl font-bold text-orange-300">{p.score}</span>

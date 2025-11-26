@@ -8,14 +8,14 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80">
-      <div className="fixed top-4 left-4 md:top-8 md:left-8 z-50">
+    <div className="min-h-screen bg-gradient-to-t from-zinc-200/80 via-zinc-200/80 to-zinc-200/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 font-sans">
+      <div className="fixed top-4 left-4 md:top-3 md:left-6 z-50">
         <img src="/logo.png" alt="Quizora Logo" className="h-12 w-12 md:h-16 md:w-16" />
       </div>
 
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-16 mt-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <h1 className="text-6xl md:text-7xl font-black mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-serif">
+          <h1 className="text-6xl md:text-7xl font-black mb-4 bg-gradient-to-b from-primary to-secondary bg-clip-text text-transparent font-serif">
             Quizora
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground">

@@ -246,7 +246,7 @@ const CreateQuiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 py-8">
+    <div className="min-h-screen bg-gradient-to-t from-zinc-200/80 via-zinc-200/80 to-zinc-200/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 py-8 font-sans">
       <div className="container max-w-4xl mx-auto px-4">
         <Button
           variant="ghost"
@@ -258,7 +258,7 @@ const CreateQuiz = () => {
         </Button>
 
         <Card className="p-2 sm:p-5 md:p-6 lg:p-8 shadow-lg rounded-2xl border-2 border-transparent hover:border-primary transition-all duration-300">
-          <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-4xl font-bold mb-8 bg-gradient-to-b from-primary to-secondary via-orange-300 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-4xl font-bold mb-8 bg-gradient-to-b from-primary to-orange-300 bg-clip-text text-transparent">
             {quizIdParam ? "Edit Quiz" : "Create Your Quiz"}
           </h1>
 
@@ -270,7 +270,7 @@ const CreateQuiz = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter an exciting title"
-                className="mt-2 text-zinc-300"
+                className="mt-2 dark:text-zinc-300"
               />
             </div>
 
@@ -281,7 +281,7 @@ const CreateQuiz = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="What's this quiz about?"
-                className="mt-2 text-zinc-300"
+                className="mt-2 dark:text-zinc-300"
               />
             </div>
           </div>
@@ -477,12 +477,12 @@ const CreateQuiz = () => {
            <div className="flex flex-col lg:flex-row justify-between">
 
             <div className="mt-5">
-              <Button variant="ghost" onClick={addQuestion} className="rounded-full p-2 bg-gray-100 dark:hover:bg-primary-foreground dark:hover:text-white/70 dark:text-secondar dark:bg-muted">
+              <Button variant="ghost" onClick={addQuestion} className="rounded-full p-2 bg-gray-100 dark:hover:bg-primary-foreground dark:hover:text-white/70 dark:text-secondar dark:bg-muted dark:text-orange-200">
                 <Plus className="h-4 w-4" />
                 Add Question
               </Button>
             </div>
-            <div className="w-23 mt-5 ml-12">
+            <div className="w-23 mt-5 flex flex-row justify-center">
               <Button
                 onClick={handleSave}
                 disabled={loading}

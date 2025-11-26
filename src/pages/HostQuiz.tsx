@@ -151,7 +151,7 @@ const HostQuiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 p-2 ">
+    <div className="min-h-screen bg-gradient-to-t from-zinc-200/80 via-zinc-200/80 to-zinc-200/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 p-2 font-sans">
       <div className="container max-w-6xl mx-auto mt-20">
         <Card className="p-2 mb-6">
           <div className="flex justify-between items-center">
@@ -169,7 +169,7 @@ const HostQuiz = () => {
 
           {session?.status === 'waiting' && (
             <div className="text-center py-12">
-              <h2 className="text-2xl font-bold mb-4 text-zinc-300">Waiting for participants...</h2>
+              <h2 className="text-2xl font-bold mb-4 dark:text-zinc-300">Waiting for participants...</h2>
               <p className="text-muted-foreground mb-6">
                 Share the code above for players to join
               </p>
@@ -238,7 +238,7 @@ const HostQuiz = () => {
 
               </div>
 
-              <div className="grid grid-cols-1 gap-4 text-primary-glow">
+              <div className="grid grid-cols-1 gap-4 dark:text-zinc-300">
                 {options.map(({ key: option, text: optionText }) => {
                   const colors = {
                     default: 'gray-600 border-gray-300 '
@@ -249,10 +249,10 @@ const HostQuiz = () => {
                   return (
                     <div
                       key={option}
-                      className={`p-2 sm:p-3 md:p-4 dark:text-zinc-300 text-zinc-400 rounded-xl bg-muted flex items-center justify-start gap-4 transition-all duration-200 ${isCorrect ? 'ring-4 ring-success/50 bg-success/10 border-success scale-105' : ''}`}
+                      className={`p-2 sm:p-3 md:p-4   rounded-xl bg-muted flex items-center justify-start gap-4 transition-all duration-200 ${isCorrect ? 'ring-4 ring-success/50 bg-success/10 border-success scale-105' : ''}`}
                     >
-                      <span className="w-10 h-10 rounded-full p-1 bg-gray-200 dark:bg-black text-muted-foreground text-xl font-bold text-center">{option}</span>
-                      <span className="text-xl">{optionText}</span>
+                      <span className="w-10 h-10 rounded-full p-1 bg-gray-200 dark:bg-black text-muted-foreground text-base sm:text-lg md:text-xl font-bold text-center">{option}</span>
+                      <span className="text-base sm:text-lg md:text-xl">{optionText}</span>
                     </div>
                   );
                 })}
@@ -284,8 +284,8 @@ const HostQuiz = () => {
                           'bg-muted/50'
                       }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl font-bold">{i + 1}</span>
+                    <div className="flex items-center gap-3 text-base sm:text-lg md:text-xl">
+                      <span className="font-bold">{i + 1}</span>
                       <span className="font-semibold">{p.name}</span>
                     </div>
                     <span className="text-xl font-bold text-orange-300">{p.score}</span>
@@ -328,8 +328,8 @@ const HostQuiz = () => {
                     className={`flex justify-between items-center p-2 rounded-lg ${i === 0 ? 'bg-warning/20 border-2 border-warning' : 'bg-muted'
                       }`}
                   >
-                    <div className="flex items-center gap-3 dark:text-zinc-200">
-                      <span className="text-xl font-bold">{i + 1}</span>
+                    <div className="flex items-center gap-3 dark:text-zinc-200 text-base sm:text-lg md:text-xl">
+                      <span className="font-bold">{i + 1}</span>
                       <span className="font-semibold">{p.name}</span>
                     </div>
                     <span className=" ml-1 text-xl font-bold text-orange-300">{p.score}</span>
